@@ -10,7 +10,7 @@ IndexOptions IconHeight=24 IconWidth=24
 IndexOptions IconsAreLinks
 
 # I disable this stuff, but you might like it
-IndexOptions SuppressLastModified SuppressColumnSorting
+# IndexOptions SuppressLastModified SuppressColumnSorting
 
 # Do not ignore README
 IndexIgnoreReset ON

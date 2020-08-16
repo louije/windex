@@ -1,0 +1,17 @@
+{
+  "name": "windex-ptt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/louije/windex/",
+  "author": "Louis-Jean Teitelbaum <ljt@meidosem.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^16.5.2"
+  },
+  "dependencies": {
+    "parse-torrent-title": "^1.3.0"
+  },
+  "scripts": {
+    "build": "browserify src/main.js -o script.js"
+  }
+}

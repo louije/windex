@@ -1,3 +1,7 @@
+# Fork motivation
+
+Added `parse-torrent-title` package to format file names. Made solely for personal consumption. There's a build step added to "browserify" the package for online consumption.
+
 # Windex
 
 Make your localhost look nice with styled directory index pages. No more 1996 jank.

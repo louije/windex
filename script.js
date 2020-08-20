@@ -1,50 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const ptt = require('parse-torrent-title');
-
-function run() {
-  const files = document.querySelectorAll('tr:not(:first-child) td:nth-child(2) a');
-  files.forEach(f => processFile(f));
-}
-
-function processFile(el) {
-  const name = el.innerText.trim();
-  const parsed = ptt.parse(name);
-  el.innerHTML = formatName(parsed, name);
-}
-
-function formatName(components, oldName) {
-  const ep = [season(components.season), episode(components.episode)].filter(c => c).join('');
-  const quality = [components.codec, components.resolution, components.source].join(' ');
-
-  return `
-    <span class="title">${components.title}</span>
-    <span class="ep">${ep}</span>
-    <span class="quality">${quality}</span>
-  `;
-}
-
-function episode(int) {
-  if (!int) {
-    return;
-  }
-  if (int < 10) {
-    return `E0${int}`;
-  }
-  return `E${int}`;
-}
-
-function season(int) {
-  if (!int) {
-    return;
-  }
-  if (int < 10) {
-    return `S0${int}`;
-  }
-  return `S${int}`;
-}
-
-run();
-},{"parse-torrent-title":2}],2:[function(require,module,exports){
 const Parser = require("./src/parser").Parser;
 const handlers = require("./src/handlers");
 
@@ -57,7 +11,7 @@ exports.addHandler = (handlerName, handler, options) => defaultParser.addHandler
 exports.parse = title => defaultParser.parse(title);
 exports.Parser = Parser;
 
-},{"./src/handlers":3,"./src/parser":4}],3:[function(require,module,exports){
+},{"./src/handlers":2,"./src/parser":3}],2:[function(require,module,exports){
 exports.addDefaults = /** @type Parser */ parser => {
 
     // Year
@@ -159,7 +113,7 @@ exports.addDefaults = /** @type Parser */ parser => {
     parser.addHandler("language", /\bMULTi(?:Lang|-VF2)?\b/i, { type: "lowercase" });
 };
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 function extendOptions(options) {
     options = options || {};
 
@@ -277,4 +231,80 @@ class Parser {
 
 exports.Parser = Parser;
 
-},{}]},{},[1]);
+},{}],4:[function(require,module,exports){
+const ptt = require('parse-torrent-title');
+
+function run() {
+  const files = document.querySelectorAll('tr:not(:first-child) td:nth-child(2) a');
+  files.forEach(f => processFile(f));
+}
+
+function processFile(el) {
+  const name = el.innerText.trim();
+  const parsed = ptt.parse(name);
+  el.innerHTML = formatName(parsed, name);
+}
+
+function formatName(components, oldName) {
+  const title = getTitle(components, oldName);
+  const ext = getExt(components, oldName);
+  const ep = [getSeason(components.season), getEp(components.episode)].filter(c => c).join('');
+  const quality = [components.codec, components.resolution, components.source].join(' ');
+
+  const titleHTML = `<span class="title">${title}</span>`;
+  const extHTML = (ext) ? `<span class="ext">${ext}</span>` : undefined;
+  const epHTML = (ep) ? `<span class="ep">${ep}</span>` : undefined;
+  const qualHTML = (quality) ? `<span class="quality">${quality}</span>` : undefined;
+
+  const html = [
+    titleHTML,
+    epHTML,
+    qualHTML,
+    extHTML,
+  ].filter(h => h).join(' ');
+
+  return html;
+}
+
+function getTitle(components, oldName) {
+  if (Object.keys(components).length === 1) {
+    return oldName;
+  }
+  return components.title;
+}
+
+function getExt(components, oldName) {
+  if (components.container) {
+    return components.container;
+  }
+
+  if (oldName.slice(-1) !== '/') {
+    const extension = oldName.split('.').pop();
+    if (extension !== oldName) {
+      return extension;
+    }
+  }
+}
+
+function getEp(int) {
+  if (!int) {
+    return;
+  }
+  if (int < 10) {
+    return `E0${int}`;
+  }
+  return `E${int}`;
+}
+
+function getSeason(int) {
+  if (!int) {
+    return;
+  }
+  if (int < 10) {
+    return `S0${int}`;
+  }
+  return `S${int}`;
+}
+
+run();
+},{"parse-torrent-title":1}]},{},[4]);

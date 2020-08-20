@@ -83,6 +83,20 @@ td:nth-child(3) {
   font-size: 0.9rem;
 }
 
+.ext:not(:empty) {
+  background-color: #aaa;
+  color: white;
+  position: relative;
+  top: -1.5px;
+  font-size: 0.5rem;
+  /*line-height: 1rem;*/
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: .125em .5em;
+  border-radius: 4px;
+}
+
 .ep:not(:empty) {
   /*color: #666;*/
   position: relative;

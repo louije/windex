@@ -12,17 +12,47 @@ function processFile(el) {
 }
 
 function formatName(components, oldName) {
-  const ep = [season(components.season), episode(components.episode)].filter(c => c).join('');
+  const title = getTitle(components, oldName);
+  const ext = getExt(components, oldName);
+  const ep = [getSeason(components.season), getEp(components.episode)].filter(c => c).join('');
   const quality = [components.codec, components.resolution, components.source].join(' ');
 
-  return `
-    <span class="title">${components.title}</span>
-    <span class="ep">${ep}</span>
-    <span class="quality">${quality}</span>
-  `;
+  const titleHTML = `<span class="title">${title}</span>`;
+  const extHTML = (ext) ? `<span class="ext">${ext}</span>` : undefined;
+  const epHTML = (ep) ? `<span class="ep">${ep}</span>` : undefined;
+  const qualHTML = (quality) ? `<span class="quality">${quality}</span>` : undefined;
+
+  const html = [
+    titleHTML,
+    epHTML,
+    qualHTML,
+    extHTML,
+  ].filter(h => h).join(' ');
+
+  return html;
 }
 
-function episode(int) {
+function getTitle(components, oldName) {
+  if (Object.keys(components).length === 1) {
+    return oldName;
+  }
+  return components.title;
+}
+
+function getExt(components, oldName) {
+  if (components.container) {
+    return components.container;
+  }
+
+  if (oldName.slice(-1) !== '/') {
+    const extension = oldName.split('.').pop();
+    if (extension !== oldName) {
+      return extension;
+    }
+  }
+}
+
+function getEp(int) {
   if (!int) {
     return;
   }
@@ -32,7 +62,7 @@ function episode(int) {
   return `E${int}`;
 }
 
-function season(int) {
+function getSeason(int) {
   if (!int) {
     return;
   }
